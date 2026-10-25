@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111824">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+
+<title>ICT Teaching 3 — Daily Observation Journal</title>
+<style>
+:root{--bg:#0d1118;--panel:#151c27;--panel2:#101620;--line:#303b4c;--text:#e8edf5;--muted:#9ba9bc;--gold:#d8b66b;--blue:#8fb8ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:18px 16px 14px;background:#111824;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+h1{font-size:19px;line-height:1.2;margin:0 0 5px}header p{margin:0;color:var(--muted);font-size:12px}
+.wrap{max-width:850px;margin:auto;padding:14px 12px 90px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+button,.btn{background:#253247;color:var(--text);border:1px solid #3b4b63;border-radius:9px;padding:10px 12px;font-weight:650;font-size:13px}
+button.primary{background:var(--gold);border-color:var(--gold);color:#17130a}button.danger{background:#3a2028;border-color:#72404b}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin:12px 0;overflow:hidden}
+.card h2{font-size:15px;margin:0;padding:12px 13px;background:var(--panel2);border-bottom:1px solid var(--line)}
+.card .body{padding:12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+input,select,textarea{width:100%;background:#0d131d;color:var(--text);border:1px solid #354155;border-radius:8px;padding:10px;font:inherit;min-width:0}
+textarea{min-height:54px;resize:vertical}input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold)}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{border:1px solid var(--line);padding:7px;text-align:left;vertical-align:middle}th{color:var(--gold);background:#101620}td input,td select{padding:7px;font-size:12px}
+.checkrow{display:grid;grid-template-columns:1.1fr .6fr 1.5fr;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #293444}.checkrow:last-child{border:0}.checkrow .name{font-size:13px}
+.inlinechecks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tick{display:flex;gap:8px;align-items:center;color:var(--text);font-size:13px}.tick label{margin:0;color:var(--text);font-size:13px}
+.subhead{font-weight:700;color:var(--blue);margin:14px 0 8px;font-size:13px}
+.muted{color:var(--muted);font-size:12px}.status{color:var(--gold);font-size:12px}
+.footer{color:var(--muted);font-size:11px;text-align:center;margin-top:20px}
+@media(min-width:620px){.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.inlinechecks{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:420px){.checkrow{grid-template-columns:1fr .5fr 1.1fr}.checkrow .name{font-size:12px}.wrap{padding-left:9px;padding-right:9px}}
+</style>
+</head>
+<body>
+<header><h1>ICT TEACHING 3</h1><p>Daily Observation Worksheet · Session & Journal · Personal use</p></header>
+<main class="wrap">
+<div class="toolbar">
+<button class="primary" id="saveBtn">Save today's journal</button>
+<button id="newBtn">New blank day</button>
+<button id="exportBtn">Export backup (.json)</button>
+<button id="csvBtn">Export journal (.csv)</button>
+<button class="danger" id="clearBtn">Clear form</button>
+</div>
+<div class="status" id="status" aria-live="polite">Your entries are stored on this device/browser after you save.</div>
+
+<section class="card"><h2>Journal Details</h2><div class="body grid three">
+<div><label for="date">Date</label><input id="date" data-field type="date"></div>
+<div><label for="instrument">Instrument</label><input id="instrument" data-field placeholder="e.g. XAUUSD / GC1!"></div>
+<div><label for="day">Day</label><input id="day" data-field placeholder="e.g. Monday"></div>
+<div><label for="timeframe">Timeframe focus</label><input id="timeframe" data-field placeholder="e.g. Daily / 4H / 15M"></div>
+<div><label for="marketSession">Market/session</label><input id="marketSession" data-field placeholder="e.g. London / New York"></div>
+<div><label for="platform">Chart platform</label><input id="platform" data-field placeholder="e.g. TradingView"></div>
+</div></section>
+
+<section class="card"><h2>1. Chart Setup Checklist</h2><div class="body">
+<div class="muted">Tick when checked. Record only what is visible on your chart.</div>
+<div id="chartChecks"></div>
+</div></section>
+
+<section class="card"><h2>2. Higher-Timeframe Observation — Daily & 4H</h2><div class="body">
+<table><thead><tr><th>What to mark</th><th>My observation / price levels</th></tr></thead><tbody>
+<tr><td>Recent swing highs and swing lows</td><td><textarea data-field id="swingLevels" placeholder="Levels / notes"></textarea></td></tr>
+<tr><td>Strong bullish / bearish displacement moves</td><td><textarea data-field id="displacement" placeholder="Direction, time, price level"></textarea></td></tr>
+<tr><td>Untested highs and lows</td><td><textarea data-field id="untested" placeholder="Untested levels"></textarea></td></tr>
+<tr><td>Equal highs (EQH) / equal lows (EQL)</td><td><textarea data-field id="eqhEql" placeholder="Levels / notes"></textarea></td></tr>
+<tr><td>Weekly high / low and important range levels</td><td><textarea data-field id="weeklyLevels" placeholder="Levels / notes"></textarea></td></tr>
+</tbody></table>
+</div></section>
+
+<section class="card"><h2>3. Intraday Observation — 1H & 15M</h2><div class="body">
+<table><thead><tr><th>Question</th><th>Record here</th></tr></thead><tbody>
+<tr><td>Previous Day High (PDH)</td><td><input data-field id="pdh" placeholder="Price level"></td></tr>
+<tr><td>Previous Day Low (PDL)</td><td><input data-field id="pdl" placeholder="Price level"></td></tr>
+<tr><td>Current day high / low</td><td><input data-field id="dayHL" placeholder="High / Low"></td></tr>
+<tr><td>Buy-side liquidity (BSL) / Sell-side liquidity (SSL)</td><td><textarea data-field id="liquidity" placeholder="Levels / swept or unswept"></textarea></td></tr>
+<tr><td>Strong move, consolidation, or price returning to a level?</td><td><textarea data-field id="intradayBehaviour" placeholder="What price did"></textarea></td></tr>
+</tbody></table>
+</div></section>
+
+<section class="card"><h2>4. Time & Session Log</h2><div class="body"><table><thead><tr><th>Event</th><th>Time</th><th>Price / level</th><th>Notes</th></tr></thead><tbody id="sessionRows"></tbody></table></div></section>
+
+<section class="card"><h2>5. What kind of price behaviour did I observe?</h2><div class="body">
+<div class="inlinechecks" id="behaviourChecks"></div>
+<label for="evidence" style="margin-top:14px">Evidence — what did price actually do?</label><textarea data-field id="evidence" style="min-height:100px" placeholder="Describe price action objectively; avoid guessing."></textarea>
+</div></section>
+
+<section class="card"><h2>6. End-of-Day Journal</h2><div class="body">
+<table><thead><tr><th>Prompt</th><th>My notes</th></tr></thead><tbody>
+<tr><td>Important levels for tomorrow</td><td><textarea data-field id="tomorrowLevels"></textarea></td></tr>
+<tr><td>Which highs/lows were swept, if any?</td><td><textarea data-field id="sweptLevels"></textarea></td></tr>
+<tr><td>What did I learn correctly?</td><td><textarea data-field id="learned"></textarea></td></tr>
+<tr><td>What did I misread or assume too early?</td><td><textarea data-field id="misread"></textarea></td></tr>
+<tr><td>Screenshot saved? Marked chart saved?</td><td><select data-field id="screenshots"><option value="">Choose…</option><option>Yes</option><option>No</option><option>Partly</option></select></td></tr>
+<tr><td>Did I follow my plan and avoid forced trades?</td><td><select data-field id="followedPlan"><option value="">Choose…</option><option>Yes</option><option>No</option><option>N/A — observation only</option></select></td></tr>
+</tbody></table>
+<p class="muted">Reminder: EQH/EQL or a high/low may attract price, but a sweep is not guaranteed. This sheet is for observation and journaling, not a trade signal.</p>
+</div></section>
+<div class="footer">ICT Teaching 3 · Daily Observation Worksheet · Data stays in this browser unless exported.</div>
+</main>
+<script>
+const chartItems=[
+ ["Daily (D)","9–12 months"],["4H","About 3 months"],["1H","At least 3 weeks"],["15M","About 3–4 days"],["Chart clean / indicators only if useful","One main instruction"]
+];
+const chartRoot=document.getElementById('chartChecks');
+chartItems.forEach((it,i)=>{let row=document.createElement('div');row.className='checkrow';row.innerHTML=`<div class="name">${it[0]}<div class="muted">${it[1]}</div></div><div class="tick"><input type="checkbox" data-field id="chartDone${i}"><label for="chartDone${i}">Done</label></div><input data-field id="chartNote${i}" placeholder="Notes">`;chartRoot.appendChild(row)});
+const sessions=["Asian session high / low","London session high / low","New York session high / low","Day's high formed at","Day's low formed at","Week's high / low (if known)"];
+const sr=document.getElementById('sessionRows');
+sessions.forEach((s,i)=>{let tr=document.createElement('tr');tr.innerHTML=`<td>${s}</td><td><input data-field id="sessionTime${i}" placeholder="Time"></td><td><input data-field id="sessionPrice${i}" placeholder="Price / level"></td><td><input data-field id="sessionNote${i}" placeholder="Notes"></td>`;sr.appendChild(tr)});
+const behaviours=["Consolidation","Retracement","Expansion","Possible reversal","Liquidity sweep observed","Continuation observed","No clear setup","Not sure yet"];
+const br=document.getElementById('behaviourChecks');
+behaviours.forEach((s,i)=>{let lab=document.createElement('label');lab.className='tick';lab.innerHTML=`<input type="checkbox" data-field id="behaviour${i}"><span>${s}</span>`;br.appendChild(lab)});
+function fields(){return [...document.querySelectorAll('[data-field]')]}
+function snapshot(){let o={};fields().forEach(el=>{o[el.id]=el.type==='checkbox'?el.checked:el.value});return o}
+function apply(o){fields().forEach(el=>{if(!(el.id in o))return;if(el.type==='checkbox')el.checked=!!o[el.id];else el.value=o[el.id]??''})}
+function key(){return 'ictjournal-'+(document.getElementById('date').value||'undated')}
+function save(){let data=snapshot();localStorage.setItem(key(),JSON.stringify(data));localStorage.setItem('ictjournal-last',JSON.stringify(data));document.getElementById('status').textContent='Saved on this device at '+new Date().toLocaleTimeString()+'.';}
+document.getElementById('saveBtn').addEventListener('click',save);
+document.getElementById('newBtn').addEventListener('click',()=>{if(!confirm('Start a blank journal? Save this day first if needed.'))return;fields().forEach(el=>{if(el.type==='checkbox')el.checked=false;else el.value=''});document.getElementById('date').value=new Date().toISOString().slice(0,10);document.getElementById('status').textContent='Blank journal ready. Save it when finished.';});
+document.getElementById('clearBtn').addEventListener('click',()=>{if(!confirm('Clear every field in this form? Saved entries are not deleted.'))return;fields().forEach(el=>{if(el.type==='checkbox')el.checked=false;else el.value=''});document.getElementById('status').textContent='Form cleared. Previously saved entries remain in storage.';});
+document.getElementById('date').value=new Date().toISOString().slice(0,10);
+const dateEl=document.getElementById('date');
+dateEl.addEventListener('change',()=>{let saved=localStorage.getItem('ictjournal-'+dateEl.value);if(saved){apply(JSON.parse(saved));document.getElementById('status').textContent='Loaded saved journal for '+dateEl.value+'.'}else{document.getElementById('status').textContent='No saved journal for this date yet.'}});
+document.getElementById('exportBtn').addEventListener('click',()=>{let entries={};for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);if(k&&k.startsWith('ictjournal-')&&k!=='ictjournal-last'){try{entries[k]=JSON.parse(localStorage.getItem(k))}catch(e){}}}download('ict-journal-backup.json',JSON.stringify(entries,null,2),'application/json')});
+document.getElementById('csvBtn').addEventListener('click',()=>{let entries=[];for(let i=0;i<localStorage.length;i++){let k=localStorage.key(i);if(k&&k.startsWith('ictjournal-')&&k!=='ictjournal-last'){try{entries.push(JSON.parse(localStorage.getItem(k)))}catch(e){}}}if(!entries.length)entries=[snapshot()];let keys=[...new Set(entries.flatMap(x=>Object.keys(x)))];let csv=[keys.map(q=>'"'+q.replace(/"/g,'""')+'"').join(','),...entries.map(o=>keys.map(q=>'"'+String(o[q]??'').replace(/"/g,'""')+'"').join(','))].join('\r\n');download('ict-journal.csv',csv,'text/csv;charset=utf-8')});
+function download(name,content,type){let blob=new Blob([content],{type});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+try{let d=localStorage.getItem('ictjournal-'+dateEl.value);if(d){apply(JSON.parse(d));document.getElementById('status').textContent='Loaded saved journal for today.'}}catch(e){document.getElementById('status').textContent='Local storage unavailable. Export backups regularly.'}
+</script>
+<script>if ("serviceWorker" in navigator) { window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {})); }</script>
+</body></html>
